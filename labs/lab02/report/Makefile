@@ -1,37 +1,19 @@
-FILES = $(patsubst %.md, %.docx, $(wildcard *.md))
-FILES += $(patsubst %.md, %.pdf, $(wildcard *.md))
+all: report.pdf report.docx
 
-FILTERS =
-OPTIONS =
-PDF_ENGINE =
-PDF_OPTIONS =
-FORMAT_OPTIONS =
+report.pdf: report.md
+	pandoc report.md -o report.pdf \
+	--resource-path=.:image \
+	--pdf-engine=xelatex \
+	-V mainfont="Liberation Serif" \
+	-V sansfont="Liberation Sans" \
+	-V monofont="Liberation Mono" \
+	-V geometry:margin=2.5cm
 
-### Cross references
-## Use pandoc-xnos (https://github.com/tomduck/pandoc-xnos)
-## Local pandoc-xnos
-# FILTERS += --filter pandoc/filters/pandoc_fignos.py --filter pandoc/filters/pandoc_eqnos.py --filter pandoc/filters/pandoc_tablenos.py --filter pandoc/filters/pandoc_secnos.py
-## System-wide pandoc-xnos
-# FILTERS += --filter pandoc-fignos --filter pandoc-eqnos --filter pandoc-tablenos --filter pandoc-secnos
-## Use pandoc-crossref (https://github.com/lierdakil/pandoc-crossref)
-FILTERS += --filter pandoc-crossref
-###
-PDF_ENGINE += --pdf-engine=lualatex --pdf-engine-opt=--shell-escape
-OPTIONS += --number-sections
-BIB_OPTIONS = --citeproc
-PDF_BIB_OPTIONS = --citeproc
-# PDF_BIB_OPTIONS = --biblatex
-
-%.docx: %.md
-	-pandoc "$<" $(FILTERS) $(OPTIONS) $(BIB_OPTIONS) -o "$@"
-
-%.pdf: %.md
-	-pandoc "$<" $(FILTERS) $(PDF_ENGINE) $(PDF_OPTIONS) $(PDF_BIB_OPTIONS) $(FORMAT_OPTIONS) $(OPTIONS) -o "$@"
-
-all: $(FILES)
-
+report.docx: report.md
+	pandoc report.md -o report.docx \
+	--resource-path=.:image
 
 clean:
-	-rm $(FILES) *~
+	rm -f report.pdf report.docx
 
-cleanall: clean
+.PHONY: all clean

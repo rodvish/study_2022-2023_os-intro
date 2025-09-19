@@ -1,0 +1,282 @@
+<h1 id="шаблон-каталога-курса-для-студентов">Шаблон каталога курса для студентов</h1>
+<h2 id="скачать-репозиторий">Скачать репозиторий</h2>
+<p>git clone –recursive https://github.com/yamadharma/course-directory-student-template.git</p>
+<h1 id="основные-идеи">Основные идеи</h1>
+<ul>
+<li>Стандартные соглашения об именах</li>
+<li>Стандартное соглашение для путей к файлам</li>
+<li>Стандартная настройка курса внутри шаблона курса</li>
+</ul>
+<h1 id="используемые-стандарты-и-программные-продукты">Используемые стандарты и программные продукты</h1>
+<ul>
+<li>Стандарт Git Flow.</li>
+<li>Стандарт Семантическое версионирование.</li>
+<li>Стандарт Общепринятые коммиты.</li>
+</ul>
+<h1 id="дополнительное-программное-обеспечение">Дополнительное программное обеспечение</h1>
+<h2 id="средства-разработки">Средства разработки</h2>
+<h3 id="fedora">Fedora</h3>
+<ul>
+<li><p>Установите средства разработки:</p>
+<pre class="shell"><code>sudo dnf -y group install development-tools</code></pre></li>
+</ul>
+<h2 id="quarto">Quarto</h2>
+<h3 id="установка">Установка</h3>
+<ol type="1">
+<li><p>Windows</p>
+<ul>
+<li><p>Chocolatey (см. <a href="id:78f49355-a60d-4cb0-9f35-e7abd8b180df">Пакетный менеджер для Windows. Chocolatey</a>):</p>
+<pre class="shell"><code>choco install quarto</code></pre></li>
+</ul></li>
+<li><p>Linux</p>
+<ol type="1">
+<li><p>Linux в общем</p>
+<ul>
+<li><p>Установка с помощью скрипта:</p>
+<pre class="shell"><code>#!/bin/bash
+
+## Система
+TARGET=/opt
+TARGET_BIN=/usr/local/bin
+## Домашний каталог
+# TARGET=~/opt
+# TARGET_BIN=~/.local/bin
+
+
+## Получить тег
+TAG=`basename $(curl -sL -o /dev/null -w %{url_effective} https://github.com/quarto-dev/quarto-cli/releases/latest)`
+TAG=${TAG/v/}
+
+## Скачать
+cd /tmp
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v${TAG}/quarto-${TAG}-linux-amd64.tar.gz
+
+## Распаковать
+mkdir -p ${TARGET}
+tar -C ${TARGET} -xvzf /tmp/quarto-${TAG}-linux-amd64.tar.gz
+mv ${TARGET}/quarto-${TAG} ${TARGET}/quarto
+
+## Симлинк на исполняемый файл
+mkdir -p ${TARGET_BIN}
+ln -s ${TARGET}/quarto/bin/quarto ${TARGET_BIN}/quarto</code></pre></li>
+</ul></li>
+<li><p>Gentoo</p>
+<ul>
+<li><p>Gentoo, репозиторий karma:</p>
+<pre class="shell"><code>emerge quarto</code></pre></li>
+</ul></li>
+<li><p>Arch</p>
+<ul>
+<li><p>Arch linux:</p>
+<pre class="shell"><code>pacman -S quarto-cli-bin</code></pre></li>
+<li><p>Manjaro linux:</p>
+<pre class="shell"><code>pamac install quarto-cli-bin</code></pre></li>
+</ul></li>
+<li><p>Fedora</p>
+<ul>
+<li><p>Установка из CORP:</p>
+<pre class="shell"><code>sudo dnf -y copr enable iucar/rstudio
+sudo dnf -y install quarto
+sudo dnf -y install libxcrypt-compat</code></pre></li>
+</ul></li>
+</ol></li>
+</ol>
+<h2 id="общепринятые-коммиты">Общепринятые коммиты</h2>
+<h3 id="установка-node.js">Установка Node.js</h3>
+<ul>
+<li><p>На Node.js базируется программное обеспечение для семантического версионирования и общепринятых коммитов.</p></li>
+<li><p>Для управления пакетами лучше использовать <code>pnpm</code>, но можно и <code>yarn</code>.</p></li>
+<li><p>Gentoo</p>
+<ul>
+<li><p>Node.js:</p>
+<pre class="shell"><code>emerge nodejs
+emerge yarn</code></pre></li>
+<li><p>pnpm ставим из оверлея <code>guru</code>:</p>
+<pre class="shell"><code>eselect repository enable guru
+emerge --sync guru
+emerge pnpm-bin</code></pre></li>
+</ul></li>
+<li><p>Ubuntu</p>
+<pre class="shell"><code>apt-get install nodejs
+apt-get install yarn</code></pre></li>
+<li><p>Fedora</p>
+<pre class="shell"><code>sudo dnf -y install nodejs
+sudo dnf -y install yarn pnpm</code></pre></li>
+<li><p>Windows</p>
+<ul>
+<li><p>Chocolatey:</p>
+<pre class="shell"><code>choco install nodejs
+choco install yarn
+choco install pnpm</code></pre></li>
+</ul></li>
+<li><p>MacOS</p>
+<pre class="shell"><code>brew install node</code></pre></li>
+</ul>
+<h3 id="настройка-node.js">Настройка Node.js</h3>
+<p>Для работы с Node.js добавим каталог с исполняемыми файлами, устанавливаемыми пакетным менеджером, в переменную <code>PATH</code>.</p>
+<ul>
+<li>Linux
+<ul>
+<li><code>pnpm</code>
+<ul>
+<li><p>Запустите:</p>
+<pre class="shell"><code>pnpm setup</code></pre></li>
+<li><p>Перелогиньтесь, или выполните:</p>
+<pre class="shell"><code>source ~/.bashrc</code></pre></li>
+</ul></li>
+<li><code>yarn</code>
+<ul>
+<li><p>В файле <code>~/.bashrc</code> добавьте к переменной <code>PATH</code>:</p>
+<pre class="conf-unix"><code>PATH=~/.yarn/bin:$PATH</code></pre></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="установка-git-flow">Установка git-flow</h3>
+<ul>
+<li><p>Linux</p>
+<ul>
+<li><p>Gentoo</p>
+<pre class="shell"><code>emerge dev-vcs/git-flow</code></pre></li>
+<li><p>Ubuntu</p>
+<pre class="shell"><code>apt-get install git-flow</code></pre></li>
+<li><p>Fedora</p>
+<ul>
+<li><p>Устанавливается из COPR:</p>
+<pre class="shell"><code>sudo dnf -y copr enable elegos/gitflow
+sudo dnf install gitflow</code></pre></li>
+</ul></li>
+</ul></li>
+<li><p>Windows Git-flow входит в состав пакета git.</p>
+<pre class="shell"><code>choco install git</code></pre></li>
+<li><p>MacOS</p>
+<pre class="shell"><code>brew install git-flow</code></pre></li>
+</ul>
+<h3 id="общепринятые-коммиты-1">Общепринятые коммиты</h3>
+<ol type="1">
+<li><p>commitizen</p>
+<ul>
+<li>Данная программа используется для помощи в форматировании коммитов.
+<ul>
+<li><p>pnpm:</p>
+<pre class="shell"><code>pnpm add -g commitizen</code></pre></li>
+<li><p>yarn:</p>
+<pre class="shell"><code>yarn global add commitizen</code></pre></li>
+</ul></li>
+<li>При этом устанавливается скрипт <code>git-cz</code>, который мы и будем использовать для коммитов.</li>
+</ul></li>
+<li><p>standard-version</p>
+<ul>
+<li>Данная программа автоматизирует изменение номера версии.
+<ul>
+<li><p>pnpm:</p>
+<pre class="shell"><code>pnpm add -g standard-version</code></pre></li>
+<li><p>yarn:</p>
+<pre class="shell"><code>yarn global add standard-version</code></pre></li>
+</ul></li>
+</ul></li>
+</ol>
+<h1 id="общие-правила">Общие правила</h1>
+<ul>
+<li><p>Для именования каталогов и файлов будем использовать соглашение Denote.</p></li>
+<li><p>Рабочее пространство по предмету располагается в следующей иерархии:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/work/study/</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> <span class="op">&lt;</span>учебный год<span class="op">&gt;</span>/</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> <span class="op">&lt;</span>учебный год<span class="op">&gt;</span>==<span class="op">&lt;</span>код предмета<span class="op">&gt;</span>/</span></code></pre></div></li>
+<li><p>Например, для 2025-2026 учебного года (второй семестр) и предмета «Операционные системы» (код предмета <code>os-intro</code>) структура каталогов примет следующий вид:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/work/study/</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> 2026-1/</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> 2026-1==os-intro/</span></code></pre></div></li>
+<li><p>Название проекта на хостинге git имеет вид:</p>
+<pre class="example"><code>&lt;учебный год&gt;--study--&lt;код предмета&gt;</code></pre></li>
+<li><p>Например, для 2025-2026 учебного года и предмета «Операционные системы» (код предмета <code>os-intro</code>) название проекта примет следующий вид:</p>
+<pre class="example"><code>2026-1--study--os-intro</code></pre></li>
+<li><p>Каталог для лабораторных работ имеет вид <code>labs</code>.</p></li>
+<li><p>Каталоги для лабораторных работ имеют вид <code>lab&lt;номер&gt;</code>, например: <code>lab01</code>, <code>lab02</code> и т.д.</p></li>
+<li><p>Каталог для групповых проектов имеет вид <code>group-project</code>.</p></li>
+<li><p>Каталог для персональных проектов имеет вид <code>personal-project</code>.</p></li>
+<li><p>Каталог для внешнего курса имеет вид <code>external-course</code>.</p></li>
+<li><p>Если проектов несколько, то они нумеруются подобно лабораторным работам.</p></li>
+<li><p>Этапы проекта обозначаются как <code>stage&lt;номер&gt;</code>.</p></li>
+</ul>
+<h1 id="шаблон-для-рабочего-пространства">Шаблон для рабочего пространства</h1>
+<ul>
+<li>Репозиторий: <a href="https://github.com/yamadharma/course-directory-student-template" class="uri">https://github.com/yamadharma/course-directory-student-template</a>.</li>
+</ul>
+<h2 id="сознание-репозитория-курса-на-основе-шаблона">Сознание репозитория курса на основе шаблона</h2>
+<ul>
+<li>Репозиторий на основе шаблона можно создать либо вручную, через web-интерфейс, либо с помощью утилит <code>gh</code>.</li>
+</ul>
+<h3 id="создание-с-помощью-утилит">Создание с помощью утилит</h3>
+<ul>
+<li><p>Создание выглядит следующим образом:</p>
+<pre class="shell"><code>gh repo create &lt;new-repo-name&gt; --template=&quot;&lt;owner/template-repo&gt;&quot;</code></pre></li>
+<li><p>Например, для 2024-2025 учебного года и предмета «Операционные системы» (аббревиатура предмета — <code>os-intro</code>) создание репозитория примет следующий вид:</p>
+<pre class="shell"><code>mkdir -p ~/work/study/2026-1/2026-1==study--os-intro
+cd ~/work/study/2026-1/2026-1==study--os-intro
+gh repo create 2026-1--study--os-intro --template=yamadharma/course-directory-student-template --public
+git clone --recursive git@github.com:&lt;owner&gt;/2026-1--study--os-intro.git</code></pre></li>
+</ul>
+<h3 id="создание-вручную">Создание вручную</h3>
+<ul>
+<li>Сделать свой репозиторий на основе шаблона можно и вручную: <a href="https://docs.github.com/ru/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template" class="uri">https://docs.github.com/ru/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template</a>.</li>
+</ul>
+<h2 id="структура-шаблона">Структура шаблона</h2>
+<ul>
+<li><p>Посмотреть доступные цели <code>make</code>:</p>
+<pre class="shell"><code>make help</code></pre></li>
+<li><p>Посмотреть список доступных курсов:</p>
+<pre class="shell"><code>make list</code></pre></li>
+<li><p>При создании структуры название курса берётся из следующих мест:</p>
+<ul>
+<li>название курса находится в файле <code>COURSE</code>;</li>
+<li>каталог курса называется как аббревиатура курса.</li>
+</ul></li>
+</ul>
+<h2 id="настройка-каталога-курса">Настройка каталога курса</h2>
+<ul>
+<li><p>Перейдите в каталог курса:</p>
+<pre class="shell"><code>cd ~/work/study/2026-1/2026-1==study--os-intro/2026-1--study--os-intro</code></pre></li>
+<li><p>Создайте необходимые каталоги:</p>
+<pre class="shell"><code>echo os-intro &gt; COURSE
+make prepare</code></pre></li>
+<li><p>Отправьте файлы на сервер:</p>
+<pre class="shell"><code>git add .
+git commit -am &#39;feat(main): make course structure&#39;
+git push</code></pre></li>
+</ul>
+<h2 id="использование-git-flow">Использование git flow</h2>
+<ul>
+<li>Будем использовать для работы git flow.</li>
+</ul>
+<h3 id="конфигурация-git-flow">Конфигурация git-flow</h3>
+<ul>
+<li><p>Инициализируем git-flow</p>
+<pre class="shell"><code>git flow init</code></pre>
+<p>Префикс для ярлыков установим в <code>v</code>.</p></li>
+<li><p>Проверьте, что Вы на ветке <code>develop</code>:</p>
+<pre class="shell"><code>git branch</code></pre></li>
+<li><p>Загрузите весь репозиторий в хранилище:</p>
+<pre class="shell"><code>git push -u --all</code></pre></li>
+<li><p>Создадим релиз с версией 1.0.0</p>
+<pre class="shell"><code>git flow release start 1.0.0</code></pre></li>
+<li><p>Создадим журнал изменений</p>
+<pre class="shell"><code>standard-changelog --first-release</code></pre></li>
+<li><p>Добавим журнал изменений в индекс</p>
+<pre class="shell"><code>git add CHANGELOG.md
+git commit -am &#39;chore(site): add changelog&#39;</code></pre></li>
+<li><p>Зальём релизную ветку в основную ветку</p>
+<pre class="shell"><code>git flow release finish 1.0.0</code></pre></li>
+<li><p>Отправим данные на github</p>
+<pre class="shell"><code>git push --all
+git push --tags</code></pre></li>
+<li><p>Скопируем CHANGELOG.md в каталог <code>release</code>:</p>
+<pre class="shell"><code>mkdir -p ../release
+cp CHANGELOG.md ../release</code></pre></li>
+<li><p>Создадим релиз на github. Для этого будем использовать утилиты работы с github (см. <a href="id:d1925a41-6b4c-4a3a-b102-6337891b8841">github: утилиты командной строки</a>):</p>
+<pre class="shell"><code>gh release create v1.0.0 -F ../release/CHANGELOG.md</code></pre></li>
+</ul>
+<h1 id="видео">Видео</h1>
+<p><a href="https://rutube.ru/video/90a6233297bc6de30acb3af992eaedc8/"><img src="https://pic.rutubelist.ru/video/2025-09-03/f3/71/f371923b6802db01d0bc4735586e7b95.jpg" alt="RuTube" /></a></p>
+<p><a href="https://plvideo.ru/watch?v=Jjf4mXm-h65_"><img src="https://s-dt-rt1.cloud.edgecore.ru/fp-2025-09-cover/Jjf4mXm-h65_/c3dea0e4-afea-4d19-927e-bfd3812d9237.jpg" alt="Платформа" /></a></p>
+<p><a href="https://vkvideo.ru/video-230024722_456239047"><img src="https://sun1-86.userapi.com/X4ozpnObDzOszkmLpm2NpauUx075QbpjA6fVGg/pOVZsIv3Ees.jpg" alt="VKvideo" /></a></p>
+<p><a href="http://www.youtube.com/watch?v=39bu5avPoDU"><img src="http://img.youtube.com/vi/39bu5avPoDU/0.jpg" alt="Youtube" /></a></p>
